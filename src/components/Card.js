@@ -9,10 +9,65 @@ import {
   Stack,
   IconButton,
 } from "@mui/material";
-import DeleteIcon from '@mui/icons-material/Delete';
-import TaskIcon from '@mui/icons-material/Task';
-import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from "@mui/icons-material/Delete";
+import TaskIcon from "@mui/icons-material/Task";
+import EditIcon from "@mui/icons-material/Edit";
 
+const markComplete = async (id) => {
+  try {
+    const response = await fetch("http://127.0.0.1:3001/todo/markComplete", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed");
+    }
+
+    const result = await response.json();
+    console.log("Item updated successfully:", result);
+
+    // Clear form fields after successful submission
+  } catch (err) {
+    console.log(err.message);
+  }
+  //   finally {
+
+  //   }
+};
+
+const deleteToDo = async (id) => {
+  try {
+    const response = await fetch("http://127.0.0.1:3001/todo/deleteTodo", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: id,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed");
+    }
+
+    const result = await response.json();
+    console.log("Item updated successfully:", result);
+
+    // Clear form fields after successful submission
+  } catch (err) {
+    console.log(err.message);
+  }
+  //   finally {
+
+  //   }
+};
 
 const ToDoCard = ({ image, id, description, dueDate, title }) => {
   return (
@@ -69,18 +124,27 @@ const ToDoCard = ({ image, id, description, dueDate, title }) => {
               Complete
             </Button> */}
 
-            <IconButton aria-label="delete" >
-        <DeleteIcon sx={{color:"red"}} />
-      </IconButton>
+            <IconButton
+              aria-label="delete"
+              onClick={() => {
+                deleteToDo(id);
+              }}
+            >
+              <DeleteIcon sx={{ color: "red" }} />
+            </IconButton>
 
-      <IconButton aria-label="delete">
-        <TaskIcon  sx={{color:"green"}}/>
-      </IconButton>
+            <IconButton
+              aria-label="complete"
+              onClick={() => {
+                markComplete(id);
+              }}
+            >
+              <TaskIcon sx={{ color: "green" }} />
+            </IconButton>
 
-      <IconButton aria-label="delete">
+            {/* <IconButton aria-label="delete">
         <EditIcon  sx={{color:"gray"}}/>
-      </IconButton>
-         
+      </IconButton> */}
           </Stack>
         </Box>
       </CardContent>

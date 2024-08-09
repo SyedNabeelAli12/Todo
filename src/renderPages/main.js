@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Global } from "@emotion/react";
 import { styled } from "@mui/material/styles";
@@ -21,6 +21,7 @@ import IconButton from "@mui/material/IconButton";
 import OpenInBrowserIcon from "@mui/icons-material/OpenInBrowser";
 import ToDoCard from "../components/Card";
 import AddTask from "../components/FloatingButton";
+import DraggableDialog from "../components/DialogBox";
 
 const drawerBleeding = 56;
 
@@ -51,6 +52,7 @@ function SwipeableEdgeDrawer(props) {
   const [open, setOpen] = React.useState(false);
   const [data, setData] = React.useState(null);
   const [row, setRow] = useState([]);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const toggleDrawer = (newOpen, data) => () => {
     setOpen(newOpen);
@@ -60,9 +62,9 @@ function SwipeableEdgeDrawer(props) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:3001/todo/');
+        const response = await fetch("http://localhost:3001/todo/");
         if (!response.ok) {
-          throw new Error('Network response was not ok');
+          throw new Error("Network response was not ok");
         }
         const result = await response.json();
         setRow(result);
@@ -73,6 +75,8 @@ function SwipeableEdgeDrawer(props) {
 
     fetchData();
   }, []);
+
+
 
   const container =
     window !== undefined ? () => window().document.body : undefined;
@@ -88,11 +92,26 @@ function SwipeableEdgeDrawer(props) {
           },
         }}
       />
+      {/* <DraggableDialog/>x */}
       <Box>
+        <Box
+          sx={{
+            color: "white",
+            backgroundColor: "black",
+            height: "40px",
+            justifyContent: "center",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          {" "}
+          <span>Todo Marker Application</span>{" "}
+        </Box>
         <Box sx={{ padding: 10 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+          {/* <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
             <AddTask />
-          </Box>
+          </Box> */}
+          <DraggableDialog />
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 600 }} aria-label="simple table">
               <TableHead>
@@ -194,4 +213,3 @@ SwipeableEdgeDrawer.propTypes = {
 };
 
 export default SwipeableEdgeDrawer;
-
