@@ -20,8 +20,9 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import IconButton from "@mui/material/IconButton";
 import OpenInBrowserIcon from "@mui/icons-material/OpenInBrowser";
 import ToDoCard from "../components/Card";
-import AddTask from "../components/FloatingButton";
-import DraggableDialog from "../components/DialogBox";
+import AddToDoDialog from "../components/DialogBox";
+import { useNavigate } from "react-router-dom";
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const drawerBleeding = 56;
 
@@ -47,7 +48,8 @@ const Puller = styled("div")(({ theme }) => ({
   left: "calc(50% - 15px)",
 }));
 
-function SwipeableEdgeDrawer(props) {
+function Home(props) {
+  const navigate = useNavigate();
   const { window } = props;
   const [open, setOpen] = React.useState(false);
   const [data, setData] = React.useState(null);
@@ -76,7 +78,10 @@ function SwipeableEdgeDrawer(props) {
     fetchData();
   }, []);
 
-
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
 
   const container =
     window !== undefined ? () => window().document.body : undefined;
@@ -92,26 +97,34 @@ function SwipeableEdgeDrawer(props) {
           },
         }}
       />
-      {/* <DraggableDialog/>x */}
       <Box>
         <Box
           sx={{
             color: "white",
             backgroundColor: "black",
             height: "40px",
-            justifyContent: "center",
-            display: "flex",
+            width: "100%",
+            justifyContent: "space-between",
+
+            display: "-webkit-flex",
             alignItems: "center",
           }}
         >
-          {" "}
-          <span>Todo Marker Application</span>{" "}
+          <span>Welcome User {props.user.name}</span>
+          <span style={{ flex: 1, textAlign: "center" }}>
+            Todo Marker Application
+          </span>
+          {/* <button onClick={handleLogout}>Logout</button> */}
+          <IconButton
+                        aria-label="details"
+                        size="medium"
+                        onClick={handleLogout}
+                      >
+                        <LogoutIcon fontSize="inherit" sx={{color:'white'}}/>
+                      </IconButton>
         </Box>
         <Box sx={{ padding: 10 }}>
-          {/* <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <AddTask />
-          </Box> */}
-          <DraggableDialog />
+          <AddToDoDialog user={props.user} />
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 600 }} aria-label="simple table">
               <TableHead>
@@ -208,8 +221,8 @@ function SwipeableEdgeDrawer(props) {
   );
 }
 
-SwipeableEdgeDrawer.propTypes = {
+Home.propTypes = {
   window: PropTypes.func,
 };
 
-export default SwipeableEdgeDrawer;
+export default Home;
