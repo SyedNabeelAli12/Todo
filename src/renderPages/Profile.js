@@ -17,7 +17,7 @@ function Profile() {
         });
         setUser(response.data);
       } catch (err) {
-        navigate('/login');
+        navigate('/');
       }
     };
     fetchUser();
@@ -25,7 +25,7 @@ function Profile() {
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    navigate('/login');
+    navigate('/');
   };
 
   return (

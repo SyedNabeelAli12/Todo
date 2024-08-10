@@ -19,36 +19,53 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
 import IconButton from "@mui/material/IconButton";
 import OpenInBrowserIcon from "@mui/icons-material/OpenInBrowser";
-import ToDoCard from "../components/Card";
-import AddToDoDialog from "../components/DialogBox";
+import ToDoCard from "../components/card";
+import AddToDoDialog from "../components/dialogBox";
 import { useNavigate } from "react-router-dom";
-import LogoutIcon from '@mui/icons-material/Logout';
+import LogoutIcon from "@mui/icons-material/Logout";
+import Themetoggler from "../components/themetoggler";
+import { connect } from "react-redux";
+import { changeTheme } from "../Redux/action";
+import { useSelector } from "react-redux";
 
-const drawerBleeding = 56;
 
-const Root = styled("div")(({ theme }) => ({
-  height: "100%",
-  backgroundColor:
-    theme.palette.mode === "light"
-      ? grey[100]
-      : theme.palette.background.default,
-}));
+import {
+  backgroundColorDark,
+  backgroundColorlight,
+  barColorDark,
+  barColorLight,
+  iconColorDark,
+  iconColorLight,
+  textColorDark,
+  textColorLight,
+} from "../components/theme";
 
-const StyledBox = styled("div")(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "light" ? "#fff" : grey[800],
-}));
-
-const Puller = styled("div")(({ theme }) => ({
-  width: 30,
-  height: 6,
-  backgroundColor: theme.palette.mode === "light" ? grey[300] : grey[900],
-  borderRadius: 3,
-  position: "absolute",
-  top: 8,
-  left: "calc(50% - 15px)",
-}));
 
 function Home(props) {
+  const drawerBleeding = 56;
+  
+  const Root = styled("div")(({ theme }) => ({
+    height: "100%",
+    backgroundColor:
+      theme.palette.mode === "light"
+        ? (mytheme === "light" ? backgroundColorlight: backgroundColorDark)
+        : theme.palette.background.default,
+  }));
+  
+  const StyledBox = styled("div")(({ theme }) => ({
+    backgroundColor: theme.palette.mode === "light" ? "#fff" : grey[800],
+  }));
+  
+  const Puller = styled("div")(({ theme }) => ({
+    width: 30,
+    height: 6,
+    backgroundColor: theme.palette.mode === "light" ? grey[300] : grey[900],
+    borderRadius: 3,
+    position: "absolute",
+    top: 8,
+    left: "calc(50% - 15px)",
+  }));
+  const mytheme = useSelector((state) => state.theme);
   const navigate = useNavigate();
   const { window } = props;
   const [open, setOpen] = React.useState(false);
@@ -86,7 +103,22 @@ function Home(props) {
   const container =
     window !== undefined ? () => window().document.body : undefined;
 
+    const getTextColor = (theme, textColorLight, textColorDark) => (
+      theme === 'light' ? textColorLight : textColorDark
+    );
+    
+    const getIconColor = (theme, iconColorLight, iconColorDark) => (
+      theme === 'light' ? iconColorLight : iconColorDark
+    );
+
+    const getBackgroundColor = (theme, backgroundColorlight, backgroundColorDark) => (
+      theme === 'light' ? backgroundColorlight : backgroundColorDark
+    );
+
+    const textColor = getTextColor(mytheme, textColorLight, textColorDark);
+    const iconColor = getIconColor(mytheme, iconColorLight, iconColorDark);
   return (
+    
     <Root>
       <CssBaseline />
       <Global
@@ -100,8 +132,8 @@ function Home(props) {
       <Box>
         <Box
           sx={{
-            color: "white",
-            backgroundColor: "black",
+            color: textColor,
+            backgroundColor: mytheme === "light" ? barColorLight : barColorDark,
             height: "40px",
             width: "100%",
             justifyContent: "space-between",
@@ -115,54 +147,65 @@ function Home(props) {
             Todo Marker Application
           </span>
           {/* <button onClick={handleLogout}>Logout</button> */}
-          <IconButton
-                        aria-label="details"
-                        size="medium"
-                        onClick={handleLogout}
-                      >
-                        <LogoutIcon fontSize="inherit" sx={{color:'white'}}/>
-                      </IconButton>
+          <Box>
+            {" "}
+            <IconButton
+              aria-label="details"
+              size="medium"
+              onClick={handleLogout}
+            >
+              <LogoutIcon
+                fontSize="inherit"
+                sx={{
+                  color: iconColor,
+                }}
+              />
+            </IconButton>
+            <Themetoggler />
+          </Box>
         </Box>
         <Box sx={{ padding: 10 }}>
           <AddToDoDialog user={props.user} />
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 600 }} aria-label="simple table">
-              <TableHead>
+          <TableContainer component={Paper} sx={{
+            backgroundColor: mytheme === "light" ? barColorLight : barColorDark}}>
+            <Table sx={{ minWidth: 600, }} aria-label="simple table">
+              <TableHead >
                 <TableRow>
-                  <TableCell>Id</TableCell>
-                  <TableCell align="center">Title</TableCell>
-                  <TableCell align="center">Description</TableCell>
-                  <TableCell align="center">Completed</TableCell>
-                  <TableCell align="center">Due Date</TableCell>
-                  <TableCell align="center">Details</TableCell>
+                  <TableCell sx={{color: textColor}}>Id</TableCell>
+                  <TableCell align="center" sx={{color: textColor}}>Title</TableCell>
+                  <TableCell align="center" sx={{color: textColor}}>Description</TableCell>
+                  <TableCell align="center"sx={{color: textColor}}>Completed</TableCell>
+                  <TableCell align="center"sx={{color: textColor}}>Due Date</TableCell>
+                  <TableCell align="center"sx={{color: textColor}}>Details</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {row.map((item) => (
                   <TableRow
                     key={item.id}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 },color: mytheme === "light" ? textColorLight : textColorDark}}
                   >
-                    <TableCell component="th" scope="row">
+                    <TableCell component="th" scope="row" sx={{color: textColor}}>
                       {item.id}
                     </TableCell>
-                    <TableCell align="center">{item.title}</TableCell>
-                    <TableCell align="center">{item.description}</TableCell>
-                    <TableCell align="center">
+                    <TableCell align="center" sx={{color: textColor}}>{item.title}</TableCell>
+                    <TableCell align="center" sx={{color: textColor}}>{item.description}</TableCell>
+                    <TableCell align="center" sx={{color: textColor}}>
                       {item.completed ? (
                         <CheckCircleIcon color="success" />
                       ) : (
                         <CancelIcon color="error" />
                       )}
                     </TableCell>
-                    <TableCell align="center">{item.dueDate}</TableCell>
-                    <TableCell align="center">
+                    <TableCell align="center" sx={{color: textColor}}>{item.dueDate}</TableCell>
+                    <TableCell align="center" sx={{color: textColor}}>
                       <IconButton
+
                         aria-label="details"
                         size="medium"
                         onClick={toggleDrawer(true, item)}
                       >
-                        <OpenInBrowserIcon fontSize="inherit" />
+                        <OpenInBrowserIcon fontSize="inherit"  sx={{color: iconColor}}/>
                       </IconButton>
                     </TableCell>
                   </TableRow>

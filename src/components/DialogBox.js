@@ -14,6 +14,12 @@ import TextField from "@mui/material/TextField";
 import AddIcon from "@mui/icons-material/Add";
 import Grid from "@mui/material/Grid";
 import generateRandomAlphanumeric from "../helperFunction";
+import { useSelector } from "react-redux";
+import { backgroundColorDark, backgroundColorlight, iconColorDark, iconColorLight, textColorDark, textColorLight } from "./theme";
+import { IconButton } from "@mui/material";
+import AddTaskIcon from '@mui/icons-material/AddTask';
+import CancelIcon from '@mui/icons-material/Cancel';
+
 
 function PaperComponent(props) {
   return (
@@ -26,7 +32,9 @@ function PaperComponent(props) {
   );
 }
 
+
 export default function AddToDoDialog(props) {
+  const mytheme = useSelector((state)=>state.theme)
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
@@ -53,6 +61,22 @@ export default function AddToDoDialog(props) {
   const handleDescriptionChange = (event) => {
     setDescription(event.target.value);
   };
+  const getTextColor = (theme, textColorLight, textColorDark) => (
+    theme === 'light' ? textColorLight : textColorDark
+  );
+  
+  const getIconColor = (theme, iconColorLight, iconColorDark) => (
+    theme === 'light' ? iconColorLight : iconColorDark
+  );
+  const getBackgroundColor = (theme, backgroundColorlight, backgroundColorDark) => (
+    theme === 'light' ? backgroundColorlight : backgroundColorDark
+  );
+
+  const textColor = getTextColor(mytheme, textColorLight, textColorDark);
+  const iconColor = getIconColor(mytheme, iconColorLight, iconColorDark);
+  const backgroundColor = getBackgroundColor(mytheme,backgroundColorlight, backgroundColorDark)
+
+
 
   const addTask = async () => {
     try {
@@ -123,10 +147,10 @@ export default function AddToDoDialog(props) {
         aria-labelledby="draggable-dialog-title"
       >
         <DialogTitle
-          style={{ cursor: "move", backgroundColor: "black" }}
+          style={{ cursor: "move", backgroundColor: backgroundColor }}
           id="draggable-dialog-title"
         >
-          <span style={{ color: "white" }}>Add To Do </span>
+          <span style={{ color: textColor }}>Add To Do </span>
         </DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -172,11 +196,20 @@ export default function AddToDoDialog(props) {
             </Box>
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
-          <Button autoFocus onClick={handleClose}>
+        <DialogActions sx={{backgroundColor:backgroundColor}}>
+        
+          {/* <Button autoFocus onClick={handleClose} sx={{color: textColor ,backgroundColor:iconColor}}>
             Cancel
-          </Button>
-          <Button onClick={addTask}>Add Task</Button>
+          </Button> */}
+
+          <IconButton onClick={handleClose}> 
+          <CancelIcon sx = {{color:iconColor}} ></CancelIcon>
+         </IconButton>
+          {/* <Button onClick={addTask} >Add Task</Button> */}
+
+          <IconButton onClick={addTask}> 
+          <AddTaskIcon sx = {{color:iconColor}} ></AddTaskIcon>
+         </IconButton>
         </DialogActions>
       </Dialog>
     </React.Fragment>
