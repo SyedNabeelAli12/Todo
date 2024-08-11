@@ -39,6 +39,7 @@ import {
   textColorDark,
   textColorLight,
 } from "../components/theme";
+import Chat from "../components/chat";
 
 
 function Home(props) {
@@ -97,7 +98,7 @@ function Home(props) {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("/login");
+    navigate("/");
   };
 
   const container =
@@ -164,7 +165,8 @@ function Home(props) {
             <Themetoggler />
           </Box>
         </Box>
-        <Box sx={{ padding: 10 }}>
+
+        <Box sx={{ padding: 1, display:'flex', width: '1000px', maxHeight:'600px'}}>
           <AddToDoDialog user={props.user} />
           <TableContainer component={Paper} sx={{
             backgroundColor: mytheme === "light" ? barColorLight : barColorDark}}>
@@ -214,6 +216,7 @@ function Home(props) {
             </Table>
           </TableContainer>
         </Box>
+        <Box>  <Chat user={props.user}/></Box>
         <SwipeableDrawer
           container={container}
           anchor="bottom"

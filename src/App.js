@@ -11,6 +11,8 @@ import Login from "./renderPages/SignIn";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Profile from "./renderPages/Profile";
 import ThemeToggler from './components/themetoggler';
+import Chat from "./components/chat";
+
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/profile" element={<Profile />} />
+        {/* <Route path="/chat" element={<Chat />} /> */}
+        
       </Routes>
     </Router>
 
