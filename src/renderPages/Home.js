@@ -43,7 +43,7 @@ import Chat from "../components/chat";
 
 
 function Home(props) {
-  const drawerBleeding = 56;
+  const drawerBleeding = 30;
   
   const Root = styled("div")(({ theme }) => ({
     height: "100%",
@@ -63,7 +63,7 @@ function Home(props) {
     backgroundColor: theme.palette.mode === "light" ? grey[300] : grey[900],
     borderRadius: 3,
     position: "absolute",
-    top: 8,
+    top: 10,
     left: "calc(50% - 15px)",
   }));
   const mytheme = useSelector((state) => state.theme);
@@ -77,21 +77,29 @@ function Home(props) {
   const toggleDrawer = (newOpen, data) => () => {
     setOpen(newOpen);
     setData(data);
+    
+  };
+
+
+  const closeDrawer = () =>{
+    setOpen(false)
+  }
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch("http://localhost:3001/todo/");
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const result = await response.json();
+      setRow(result);
+    } catch (err) {
+      console.error("Fetch error:", err);
+    }
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch("http://localhost:3001/todo/");
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const result = await response.json();
-        setRow(result);
-      } catch (err) {
-        console.error("Fetch error:", err);
-      }
-    };
+   
 
     fetchData();
   }, []);
@@ -141,6 +149,8 @@ function Home(props) {
 
             display: "-webkit-flex",
             alignItems: "center",
+            position:'fixed',
+            zIndex:1
           }}
         >
           <span>Welcome User {props.user.name}</span>
@@ -166,10 +176,11 @@ function Home(props) {
           </Box>
         </Box>
 
-        <Box sx={{ padding: 1, display:'flex', width: '1000px', maxHeight:'600px'}}>
-          <AddToDoDialog user={props.user} />
+        <Box sx={{ padding: 1, display:'flex', width: '1000px', minHeight:'700px', maxHeight:'1000px'}}>
           <TableContainer component={Paper} sx={{
+            marginTop:'50px',
             backgroundColor: mytheme === "light" ? barColorLight : barColorDark}}>
+          <AddToDoDialog user={props.user} refresh= {fetchData}/>
             <Table sx={{ minWidth: 600, }} aria-label="simple table">
               <TableHead >
                 <TableRow>
@@ -232,12 +243,13 @@ function Home(props) {
           <StyledBox
             sx={{
               position: "absolute",
-              top: -drawerBleeding,
+              top: (-drawerBleeding),
               borderTopLeftRadius: 8,
               borderTopRightRadius: 8,
               visibility: "visible",
               right: 0,
               left: 0,
+              
             }}
           >
             <Puller />
@@ -259,6 +271,9 @@ function Home(props) {
               description={data?.description}
               id={data?.id}
               dueDate={data?.dueDate}
+              refresh= {fetchData}
+              completed ={data?.completed}
+              closeDrawer = {closeDrawer}
             />
           </StyledBox>
         </SwipeableDrawer>

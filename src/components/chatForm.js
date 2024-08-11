@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { TextField, Button, Box } from '@mui/material';
+import { TextField, Button, Box, IconButton } from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
 
 const ChatForm = (props) => {
   const [inputValue, setInputValue] = useState('');
@@ -7,7 +8,7 @@ const ChatForm = (props) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     if (inputValue.trim()) {
-      props.onSendMessage(inputValue,props?.user?.username);
+      props.onSendMessage(inputValue,props?.user?.username,"admin");
       setInputValue('');
     }
   };
@@ -24,9 +25,14 @@ const ChatForm = (props) => {
           onChange={(e) => setInputValue(e.target.value)}
           style={{ marginRight: '10px' }}
         />
-        <Button type="submit" variant="contained" color="primary">
+        {/* <Button type="submit" variant="contained" color="primary">
           Send 
-        </Button>
+        </Button> */}
+
+        <IconButton type='submit' variant='contained'>
+       
+<SendIcon/>
+        </IconButton>
       </Box>
     </form>
   );

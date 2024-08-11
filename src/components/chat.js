@@ -47,7 +47,11 @@ const Chat = (props) => {
     setMapMessages(true);
   }, [messages]);
 
+  
+
   useEffect(() => {
+    socket.emit('register', props.user.username);
+
     const handleError = (error) => {
       console.error("Socket error:", error);
       setError("An error occurred while connecting to the chat server.");
@@ -58,8 +62,8 @@ const Chat = (props) => {
     socket.on("connect_timeout", handleError);
     socket.on("error", handleError);
 
-    socket.on("chat message", (msg) => {
-      setMessages((prevMessages) => [...prevMessages, {message:msg}]);
+    socket.on("chat message", (msg,username,reciever) => {
+      setMessages((prevMessages) => [...prevMessages, {message:msg,reciever:reciever}]);
     });
 
     return () => {
@@ -70,9 +74,9 @@ const Chat = (props) => {
     };
   }, []);
 
-  const handleSendMessage = (message, user) => {
+  const handleSendMessage = (message, username,reciever) => {
     try {
-      socket.emit("chat message", message, user);
+      socket.emit("chat message", message, username, reciever);
     } catch (err) {
       console.error("Send message error:", err);
       setError("Failed to send the message.");
@@ -118,7 +122,7 @@ const Chat = (props) => {
             height: "calc(100% - 60px)", // Adjust height based on header and footer sizes
           }}
         >
-          {mapMessages ? <MessageList messages={messages} /> : ""}{" "}
+          {mapMessages ? <MessageList messages={messages} user={props.user} /> : ""}{" "}
         </Box>
 
         <ChatForm onSendMessage={handleSendMessage} user={props.user} />
